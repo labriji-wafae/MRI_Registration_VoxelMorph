@@ -1,0 +1,60 @@
+seed: 40
+
+paths:
+  out_dir: ./experiments
+  pretrained: vxm_dense_brain_T1_3D_mse.h5
+
+data:
+  dict_pairs: 'MsrGB_pairs_with_seg_T1c.json'
+  n_folds: 5
+  batch_size: 4
+  steps_per_epoch: 14
+  val_steps: 4
+  compute_inpainting: true
+  fill_val: null
+  val_fraction: 0.2
+  reverse: true
+
+model:
+  img_size: [160, 192, 224]
+  spacing_mm: [1.0, 1.0, 1.0]
+  layers_to_unfreeze: 20
+  int_steps: 0          # >0 = SVF/diffeo in VoxelMorph
+
+loss:
+  weights: { sim: 0.5, reg: 0.01, cavity: 1.0 }
+
+  similarity:
+    name: ncc           # ncc | mse
+    win: 7
+    auto_bg: true       # corner-based background removal
+    corner: 8
+    bg_eps: 1e-5
+    exclude_cavity: true
+
+  cavity:
+    name: dice # dice | dice_boundary
+    band_mm: 10.0
+    ring_weight: 1.0
+    core_weight: 0.2
+    min_vox: 10
+
+  regularizer:
+    name: grad          # grad | bending | weighted-grad | weighted-bending
+    penalty: l2         # only for grad
+    band_mm: 10.0
+    w_ring: 0.2
+    w_core: 0.05
+
+
+train:
+  epochs: 1000
+  lr: 1.0e-4
+  patience: 20
+  grad_clip: 5.0
+  boundary_warmup_epochs: 2   # 0 = start cavity loss immediately
+
+
+logging:
+  experiment: "gbm-vxm-finetune"
+  run_name: "ncc_grad_boundary"

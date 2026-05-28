@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL configuration
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IPynb checkpoints & IDE
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# --- LOGS ET ARTIFACTS D'EXPÉRIENCES (Crucial pour MLflow) ---
+mlruns/
+experiments/
+loss_curves.png
+
+# --- POIDS DE MODELES LOURDS ---
+*.h5
+*.hdf5
+*.pt
+*.pth
+
+# --- DONNÉES CLINIQUES ET CONFIGURATIONS LOCALES ---
+*.csv
+*.json
+*.nii
+*.nii.gz
